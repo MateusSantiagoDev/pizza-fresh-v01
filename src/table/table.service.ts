@@ -27,4 +27,8 @@ export class TableService {
       return this.prisma.table.update({ where: { id }, data });
     }
 
+    async delete(id: string) {
+      await this.prisma.table.delete({ where: { id } })
+    }
+
 }
