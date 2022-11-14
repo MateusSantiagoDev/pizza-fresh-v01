@@ -12,7 +12,11 @@ export class TableService {
         return this.prisma.table.findMany()
     }
 
-    create(dto: CreateTableDto) {
+    findOne(id: string) {
+      return this.prisma.table.findUnique({ where: { id }});
+    }
+
+    create(dto: CreateTableDto): Promise<Table> {
        const data: Table = { ...dto };
        return this.prisma.table.create({ data })
     }
