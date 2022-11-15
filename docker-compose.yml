@@ -8,6 +8,7 @@ services:
     environment:
       - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_HOST=${DATABASE_HOST}
     volumes:
       - db_postgres:/documents/cursos/BLUE/modulo-05-blue
     ports:
@@ -22,6 +23,12 @@ services:
     restart: always
     ports:
       - 3000:3000
+    command: >
+      bash -c '
+        npx prisma generate
+        npx prisma db push
+        npm run start:dev
+      '
     depends_on:
       - postgres
     environment:
@@ -29,6 +36,7 @@ services:
         port: ${PRISMA_SERVER_PORT}
         database:
           default:
+            connector: ${DATABASE_CONNECTOR}
             host: ${DATABASE_HOST}
             port: ${DATABASE_PORT}
             user: ${DATABASE_USER}
