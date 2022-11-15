@@ -9,7 +9,7 @@ export class ProductService {
 
     constructor(private readonly prisma: PrismaService) {}
 
-    findAll() {
+    findAll(): Promise<Product[]> {
         return this.prisma.product.findMany()
     }
 
@@ -37,9 +37,9 @@ export class ProductService {
       return this.prisma.product.update({ where: { id }, data }).catch(this.handleError);
     }
 
-    async delete(id: string) {
+    async delete(id: string): Promise<Product> {
       await this.findById(id)
-      await this.prisma.product.delete({ where: { id } })
+      return this.prisma.product.delete({ where: { id } })
     }
 
     handleError(err: Error): undefined {

@@ -3,6 +3,8 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Product } from './entities/product.entity';
+
 
 @ApiTags("product")
 @Controller('product')
@@ -13,7 +15,7 @@ export class ProductController {
   @ApiOperation({
     summary: "Criar um produto"
   })
-  create(@Body() createProductDto: CreateProductDto) {
+  create(@Body() createProductDto: CreateProductDto): Promise<Product> {
     return this.productService.create(createProductDto);
   }
 
@@ -21,7 +23,7 @@ export class ProductController {
   @ApiOperation({
     summary: "Listar todos os produtos"
   })
-  findAll() {
+  findAll(): Promise<Product[]> {
     return this.productService.findAll();
   }
 
@@ -29,7 +31,7 @@ export class ProductController {
   @ApiOperation({
     summary: "Visualizar um produto"
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<Product> {
     return this.productService.findOne(id);
   }
 
@@ -37,7 +39,7 @@ export class ProductController {
   @ApiOperation({
     summary: "Editar um produto"
   })
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto): Promise<Product> {
     return this.productService.update(id, updateProductDto);
   }
 
@@ -46,7 +48,7 @@ export class ProductController {
   @ApiOperation({
     summary: "Remover um produto pelo ID"
   })
-  delete(@Param('id') id: string) {
-    this.productService.delete(id);
+  delete(@Param('id') id: string): Promise<Product> {
+    return this.productService.delete(id);
   }
 }
