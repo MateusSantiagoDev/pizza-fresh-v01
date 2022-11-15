@@ -46,7 +46,7 @@ export class TableController {
   @ApiOperation({
     summary: "Deletar uma mesa pelo ID"
   })
-  delete(@Param("id") id: string){
-    this.tableService.delete(id);
+  delete(@Param("id") id: string): Promise<Table> {
+    return this.tableService.delete(id);
   }
 }

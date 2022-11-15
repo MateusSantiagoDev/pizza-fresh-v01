@@ -37,9 +37,9 @@ export class TableService {
       return this.prisma.table.update({ where: { id }, data }).catch(this.handleError);
     }
 
-    async delete(id: string) {
+    async delete(id: string): Promise<Table> {
       await this.findById(id)
-      await this.prisma.table.delete({ where: { id } })
+      return this.prisma.table.delete({ where: { id } })
     }
 
     handleError(err: Error): undefined {
