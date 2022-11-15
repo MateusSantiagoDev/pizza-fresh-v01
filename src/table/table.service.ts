@@ -13,12 +13,17 @@ export class TableService {
         return this.prisma.table.findMany()
     }
 
-    async findOne(id: string) {
+    async findById(id: string): Promise<Table> {
       const data = await this.prisma.table.findUnique({ where: { id } });
       if(!data) {
         throw new NotFoundException(`não foi encontrado nenhum registro com o ID: ${id}`)
       }
       return data;
+
+    }
+
+    async findOne(id: string) {
+      return await this.findById(id)
     }
 
     create(dto: CreateTableDto): Promise<Table> {
@@ -26,7 +31,8 @@ export class TableService {
        return this.prisma.table.create({ data })
     }
 
-    update(id: string, dto: UpdateTableDto): Promise<Table> {
+    async update(id: string, dto: UpdateTableDto): Promise<Table> {
+      await this.findById(id)
       const data: Partial<Table> = { ...dto }; // partial faz a mesma coisa q o partialTypes
       return this.prisma.table.update({ where: { id }, data });
     }
