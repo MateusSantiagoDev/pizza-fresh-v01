@@ -12,14 +12,27 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
+  private userSelect = {
+    id: true,
+    nickname: true,
+    name: true,
+    password: false,
+    image: true,
+    createdAt: true,
+    updatedAt: true,
+  };
+
   constructor(private readonly prisma: PrismaService) {}
 
   findAll(): Promise<User[]> {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({ select: this.userSelect });
   }
 
   async findById(id: string): Promise<User> {
-    const data = await this.prisma.user.findUnique({ where: { id } });
+    const data = await this.prisma.user.findUnique({
+      where: { id },
+      select: this.userSelect,
+    });
     if (!data) {
       throw new NotFoundException(
         `não foi encontrado nenhum registro com o ID: ${id}`,
@@ -43,7 +56,9 @@ export class UserService {
       ...dto,
       password: await bcrypt.hash(dto.password, 10),
     };
-    return this.prisma.user.create({ data }).catch(this.handleError);
+    return this.prisma.user
+      .create({ data, select: this.userSelect })
+      .catch(this.handleError);
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<User> {
@@ -59,12 +74,12 @@ export class UserService {
 
     const data: Partial<User> = { ...dto }; // pnumberartial faz a mesma coisa q o partialTypes
 
-    if(dto.password){
-      data.password = await bcrypt.hash(data.password, 10)
+    if (dto.password) {
+      data.password = await bcrypt.hash(data.password, 10);
     }
-    
+
     return this.prisma.user
-      .update({ where: { id }, data })
+      .update({ where: { id }, data, select: this.userSelect })
       .catch(this.handleError);
   }
 
